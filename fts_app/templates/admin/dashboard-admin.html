@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DakGhar</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}
+
+
+    <div class="container">
+       <div class="row center-content">
+         <div class="col-5 text-center">
+           <h1 class="display-6">WELCOME ADMIN</h1> 
+           <h3>{{ request.session.username }}</h3>
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %} 
+                {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
+                {% endif %}
+            <div class="border bg-light rounded-4">
+                <div class="justify-content-center" style="margin:20px">
+                     <div class="row mb-3">
+                        <a href="{% url 'admin-add-user' %}" name="add_user" class="btn btn-outline-dark fw-bold">ADD USER</a>
+                     </div> 
+                     <div class="row mb-3">
+                        <a href="{% url 'admin-list-users' %}" name="list_users" class="btn btn-outline-dark fw-bold">MODIFY / DELETE USER</a> 
+                     </div> 
+                     <div class="row mb-3">
+                        <a href="{% url 'admin-add-correspondence' %}" name="add_correspondence" class="btn btn-outline-dark fw-bold">ADD CORRESPONDENCES</a>
+                     </div> 
+                     <div class="row mb-3">
+                        <a href="{% url 'admin-list-correspondence' %}" name="modify_correspondence" class="btn btn-outline-dark fw-bold">MODIFY CORRESPONDENCES</a>
+                     </div>
+                     <div class="row mb-3">
+                        <a href="{% url 'admin-monitoring-documents' %}" name="monitoring_of_documents" class="btn btn-outline-dark fw-bold">MONITORING OF DOCUMENTS</a>  
+                     </div>  
+                </div>
+            </div>
+            <br>     
+
+            </form> 
+
+         </div>
+       </div>
+    </div>
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

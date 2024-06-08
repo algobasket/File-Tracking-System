@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DakGhar</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}
+    
+    <div class="container-fluid">
+       <div class="row center-content">
+         <div class="col text-center">
+           <h1 class="display-6">WELCOME DAK SCANNER</h1> 
+           <h3>{{ request.session.username }}</h3>
+
+           {% if section == 'upload_form' %}
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %} 
+              {% if messages %}
+                  {% for message in messages %}
+                      {% if message.tags == 'error' %}
+                          <div class="alert alert-danger">{{ message }}</div>
+                      {% elif message.tags == 'success' %}
+                          <div class="alert alert-success">{{ message }}</div>
+                      {% endif %}
+                  {% endfor %}
+              {% endif %}  
+                <div class="border bg-primary rounded-4">
+                    <div class="justify-content-center" style="margin:20px">
+                      <div class="row mb-3">
+                        <label for="username" class="col-sm-3 col-form-label fw-bold text-white">FILE TITLE</label> 
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="title" name="title" placeholder="File Name/Title" required>
+                        </div>
+                        </div> 
+                        <div class="row mb-3">
+                            <label for="username" class="col-sm-3 col-form-label fw-bold text-white">UPLOAD FILE / SCAN FILE</label> 
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" id="uploadfile" name="uploadfile" required>
+                            </div>
+                        </div> 
+                        
+                    </div>
+                </div>
+               <br>      
+               <button type="submit" class="btn btn-primary">SUBMIT</button>
+            </form> 
+           {% endif %} 
+           
+           {% if section == 'dakghar_documents' %}
+           {% csrf_token %} 
+              {% if messages %}
+                  {% for message in messages %}
+                      {% if message.tags == 'error' %}
+                          <div class="alert alert-danger">{{ message }}</div>
+                      {% elif message.tags == 'success' %}
+                          <div class="alert alert-success">{{ message }}</div>
+                      {% endif %}
+                  {% endfor %}
+              {% endif %}  
+            <div class="border">
+              <div class="justify-content-center" style="margin:20px">
+                <table class="table table-primary table-xl" style="font-size:13px">
+                    
+                    <thead class="table-dark">
+                      <tr>
+                        <td>Title</td>
+                        <td>File</td>
+                        <td>Upload Date</td>
+                        <td>Status</td>
+                        <td>Forward</td>
+                        <td>Action</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for r in documents %}
+                        <tr>
+                            <td>{{ r.title }}</td>
+                            <td>{{ r.filename }}</td>
+                            <td>{{ r.created }}</td>
+                            <td>
+                              {% if r.status == 1 %}
+                              <b>Uploaded</b>
+                              {% elif r.status == 2 %}
+                                  <b class="text-success">Forwarded</b>
+                              {% endif %}
+                            </td>
+                            <td>
+                              {% if r.status == 1 %}
+                               <a href="{% url 'dakghar-documents-forward' r.id %}" class="btn btn-sm btn-light">Forward To</a>
+                              {% else %}
+                                <a href="" class="btn btn-sm btn-light disabled">Forward To</a>
+                              {% endif %}
+                            </td>
+                            <td><a href="{% url 'dakghar-delete-documents' r.id %}" class="btn btn-sm btn-light">X</a></td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                </div></div>
+           {% endif %}
+
+           {% if section == 'dakghar_documents_forward' %}
+           <div class="border"> 
+              <div class="justify-content-center" style="margin:20px">
+                    <form method="POST" action="{% url 'dakghar-documents-forward' doc_id %}">
+                          {% csrf_token %} 
+                          {% if messages %}
+                              {% for message in messages %}
+                                  {% if message.tags == 'error' %}
+                                      <div class="alert alert-danger">{{ message }}</div>
+                                  {% elif message.tags == 'success' %}
+                                      <div class="alert alert-success">{{ message }}</div>
+                                  {% endif %}
+                              {% endfor %}
+                          {% endif %}   
+                          <table class="table table-primary table-xl">
+                              
+                              <thead class="table-dark">
+                                <tr>
+                                  <td colspan="2">Forward Document To</td>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for doc in documents %}
+                                <tr>
+                                  <th>Document Name</th>
+                                  <td>{{ doc.title }}</td>
+                                </tr>
+                                <tr>
+                                  <th>Document File</th>
+                                  <td>{{ doc.filename }}</td>
+                                </tr>
+                                <tr>
+                                  <th>Notes or Message</th>  
+                                  <td><textarea class="form-control" name="note_msg" placeholder="Write a message.." required></textarea></td>
+                                </tr>
+                                {% endfor %}
+                                
+                                <tr>
+                                  <td colspan="2">
+                                    {% for role in roles %}
+                                      <button class="btn btn-light"> <input type="checkbox" name="sentTo[]" value="{{ role.id }}"/> {{ role.role_name }}</button>  
+                                    {% endfor %}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td colspan="2">
+                                    <input type="submit" name="sendDocument" value="Submit" class="btn btn-primary" />
+                                  </td>
+                                </tr>
+                              </tbody>
+                          </table>
+                    </form>
+                </div>
+            </div>
+           {% endif %}
+
+         </div>
+       </div>
+    </div>
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Department</title> 
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style> 
+  </head> 
+  <body>
+    {% include 'common/menu.html' %}
+
+    <div class="container-fluid">
+       <div class="row center-content"> 
+         <div class="col-5 text-center">   
+           
+                {% if section == 'create_department' %}
+                      <form method="post">
+                            {% csrf_token %}  
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == 'error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% elif message.tags == 'success' %}
+                                        <div class="alert alert-success">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}   
+                            <h1 class="display-6">CREATE DEPARTMENT</h1>
+                            <div class="btn-group"> 
+                                <a href="{% url 'admin-list-department' %}" class="btn btn-sm btn-outline-dark">LIST DEPARTMENT</a>
+                                <a href="{% url 'admin-list-sub-department' %}" class="btn btn-sm btn-outline-dark">LIST SUB DEPARTMENT</a>
+                                <a href="{% url 'admin-create-department' %}" class="btn btn-sm btn-outline-dark">ADD DEPARTMENT</a>
+                                <a href="{% url 'admin-create-sub-department' %}" class="btn btn-sm btn-outline-dark">ADD SUB DEPARTMENT</a>
+                            </div>    
+                            <div class="border bg-light rounded-4">
+                                <div class="justify-content-center" style="margin:20px"> 
+                                    <div class="row"> 
+                                        <table class="table table-light"> 
+                                            <tr>
+                                                <td>DEPARTMENT NAME</td>  
+                                                <td><input type="text" name="department_name" class="form-control bg-primary" placeholder="Add Department Name without space" required></td> 
+                                            </tr>
+                                            <tr>
+                                                <td>DEPARTMENT STATUS</td> 
+                                                <td>
+                                                    <select name="department_status" class="form-control">
+                                                        <option value="1">Activate</option>
+                                                        <option value="0">Deactivate</option>
+                                                    </select>
+                                                </td> 
+                                            </tr>    
+                                        </table>  
+                                    </div> 
+                                </div>
+                            </div> <br>    
+                            <input type="submit" name="addDepartmentSubmit" class="btn btn-primary" value="Submit"> 
+                     </form>  
+                {% endif %}
+
+
+                {% if section == 'update_department' %} 
+                       <form method="post" action="{% url 'admin-update-department' department.id %}">
+                        {% csrf_token %} 
+                        {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == 'error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% elif message.tags == 'success' %}
+                                        <div class="alert alert-success">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}   
+                      <h1 class="display-6">EDIT DEPARTMENT</h1> 
+                      <div class="btn-group"> 
+                        <a href="{% url 'admin-list-department' %}" class="btn btn-sm btn-outline-dark">LIST DEPARTMENT</a>
+                        <a href="{% url 'admin-list-sub-department' %}" class="btn btn-sm btn-outline-dark">LIST SUB DEPARTMENT</a>
+                        <a href="{% url 'admin-create-department' %}" class="btn btn-sm btn-outline-dark">ADD DEPARTMENT</a>
+                        <a href="{% url 'admin-create-sub-department' %}" class="btn btn-sm btn-outline-dark">ADD SUB DEPARTMENT</a>
+                    </div>    
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                               <div class="row">
+                               
+                                <table class="table table-light">
+                                    <tr>
+                                      <td>DEPARTMENT NAME</td>
+                                      <td><input type="text" value="{{ department.name }}" name="department_name" class="form-control bg-primary" placeholder="Add Department Name without space" required></td> 
+                                    </tr>
+                                    <tr>
+                                        <td>DEPARTMENT STATUS</td> 
+                                        <td>
+                                            <select name="department_status" class="form-control">
+                                                <option value="1" {% if department.status == 1 %}selected{% endif %}>Activate</option>
+                                                <option value="0" {% if department.status == 0 %}selected{% endif %}>Deactivate</option>  
+                                            </select>
+                                        </td> 
+                                      </tr>
+                                  </table>
+                               
+                               </div> 
+                          </div>
+                      </div> <br>   
+                      <input type="submit" name="updateDepartmentSubmit" class="btn btn-primary" value="Submit">
+                      </form> 
+                {% endif %}
+
+
+                {% if section == 'list_department' %}
+
+                    <h1 class="display-6">LIST ALL DEPARTMENT</h1> 
+                    <div class="btn-group"> 
+                        <a href="{% url 'admin-list-department' %}" class="btn btn-sm btn-outline-dark">LIST DEPARTMENT</a>
+                        <a href="{% url 'admin-list-sub-department' %}" class="btn btn-sm btn-outline-dark">LIST SUB DEPARTMENT</a>
+                        <a href="{% url 'admin-create-department' %}" class="btn btn-sm btn-outline-dark">ADD DEPARTMENT</a>
+                        <a href="{% url 'admin-create-sub-department' %}" class="btn btn-sm btn-outline-dark">ADD SUB DEPARTMENT</a>
+                    </div>    
+                    {% if messages %}
+                        {% for message in messages %} 
+                            {% if message.tags == 'error' %}
+                                <div class="alert alert-danger">{{ message }}</div>
+                            {% elif message.tags == 'success' %}
+                                <div class="alert alert-success">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %} 
+                    {% endif %}  
+                    <div class="border bg-light rounded-4">
+                        <div class="justify-content-center" style="margin:20px">
+                            <div class="row">
+                                <table class="table table-light" style="font-size:13px">
+                                <thead class="table-primary">
+                                    <tr>
+                                    <th>Department Name</th>
+                                    <th>Department Status</th>
+                                    <th>Created By</th> 
+                                    <th>Action</th>  
+                                </tr>  
+                                </thead>
+                                <tbody> 
+                                    {% for department in departments %}     
+                                    <tr>
+                                        <td>{{ department.name }}</td> 
+                                        <td>{{ department.status }}</td> 
+                                        <th>{{ department.created_user.username }}</th>       
+                                        <td>
+                                            <a href="{% url 'admin-update-department' department.id %}" class="btn btn-sm btn-outline-dark">Edit</a>
+                                            <a href="{% url 'admin-delete-department' department.id %}" class="btn btn-sm btn-outline-dark">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %} 
+                                </tbody>
+                                
+                                </table>
+                            </div> 
+                        </div>
+                    </div> 
+
+                {% endif %}
+
+
+
+                {% if section == 'create_sub_department' %}
+                        <form method="post"> 
+                            {% csrf_token %}  
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == 'error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% elif message.tags == 'success' %}
+                                        <div class="alert alert-success">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}   
+                            <h1 class="display-6">ADD SUB DEPARTMENT</h1>
+                            <div class="btn-group"> 
+                                <a href="{% url 'admin-list-department' %}" class="btn btn-sm btn-outline-dark">LIST DEPARTMENT</a>
+                                <a href="{% url 'admin-list-sub-department' %}" class="btn btn-sm btn-outline-dark">LIST SUB DEPARTMENT</a>
+                                <a href="{% url 'admin-create-department' %}" class="btn btn-sm btn-outline-dark">ADD DEPARTMENT</a>
+                                <a href="{% url 'admin-create-sub-department' %}" class="btn btn-sm btn-outline-dark">ADD SUB DEPARTMENT</a>
+                            </div>    
+                            <div class="border bg-light rounded-4">
+                                <div class="justify-content-center" style="margin:20px">
+                                    <div class="row">
+                                        <table class="table table-light"> 
+                                            <tr>
+                                            <td>SUB DEPARTMENT NAME</td>
+                                            <td><input type="text" name="sub_department_name" class="form-control bg-primary" placeholder="Add Sub Department Name without space" required></td> 
+                                            </tr>
+                                            <tr>
+                                                <td>PARENT DEPARTMENT</td>     
+                                                <td>
+                                                    <select name="parent_department_id" class="form-control">
+                                                        {% for department in departments %}     
+                                                            <option value="{{ department.id }}">{{ department.name }}</option>
+                                                        {% endfor %} 
+                                                    </select>
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td>DEPARTMENT ROLES</td>     
+                                                <td>
+                                                    {% for role in roles %}     
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" value="{{ role.id }}" id="flexCheckDefault" name="department_roles[]">
+                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                            {{ role.role_name }}
+                                                        </label>
+                                                      </div>
+                                                      {% endfor %}   
+                                                </td> 
+                                            </tr>     
+                                            <tr>
+                                                <td>SUB DEPARTMENT STATUS</td>     
+                                                <td>
+                                                    <select name="sub_department_status" class="form-control">
+                                                        <option value="1">Activate</option>
+                                                        <option value="0">Deactivate</option>
+                                                    </select>
+                                                </td> 
+                                            </tr>    
+                                        </table>  
+                                    </div> 
+                                </div>
+                            </div> <br>      
+                            <input type="submit" name="addSubDepartmentSubmit" class="btn btn-primary" value="Submit"> 
+                        </form> 
+               {% endif %}
+
+
+          {% if section == 'update_sub_department' %} 
+                 <form method="post" action="{% url 'admin-update-sub-department' sub_department.id %}">   
+                  {% csrf_token %} 
+                  {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% elif message.tags == 'success' %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                  {% endif %}    
+                <h1 class="display-6">EDIT SUB DEPARTMENT</h1> 
+                <div class="btn-group"> 
+                    <a href="{% url 'admin-list-department' %}" class="btn btn-sm btn-outline-dark">LIST DEPARTMENT</a>
+                    <a href="{% url 'admin-list-sub-department' %}" class="btn btn-sm btn-outline-dark">LIST SUB DEPARTMENT</a>
+                    <a href="{% url 'admin-create-department' %}" class="btn btn-sm btn-outline-dark">ADD DEPARTMENT</a>
+                    <a href="{% url 'admin-create-sub-department' %}" class="btn btn-sm btn-outline-dark">ADD SUB DEPARTMENT</a>
+                </div>    
+                <div class="border bg-light rounded-4">
+                    <div class="justify-content-center" style="margin:20px">
+                         <div class="row">
+                          <table class="table table-light">
+                              <tr>
+                                <td>SUB DEPARTMENT NAME</td>
+                                <td><input type="text" value="{{ sub_department.name }}" name="sub_department_name" class="form-control bg-primary" placeholder="Add Department Name without space" required></td> 
+                              </tr>
+                              <tr>
+                                <td>PARENT DEPARTMENT</td>     
+                                <td>
+                                    <select name="parent_department_id" class="form-control">
+                                        {% for department in departments %}
+                                            <option value="{{ department.id }}" {% if sub_department.department_id_id == department.id %}selected{% endif %}>
+                                                {{ department.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td>DEPARTMENT ROLES</td>     
+                                <td>
+                                    <!-- {% for role in roles %}     
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" value="{{ role.id }}" id="flexCheckDefault" name="department_roles[]">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                {{ role.role_name }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}    --> 
+                                    {% for role in roles %}
+                                        {% if role.id in sub_department_roles %}  
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="{{ role.id }}" id="flexCheckDefault{{ role.id }}" name="department_roles[]" checked>
+                                                <label class="form-check-label" for="flexCheckDefault{{ role.id }}">
+                                                    {{ role.role_name }}
+                                                </label>
+                                            </div>
+                                        {% else %}
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="{{ role.id }}" id="flexCheckDefault{{ role.id }}" name="department_roles[]">
+                                                <label class="form-check-label" for="flexCheckDefault{{ role.id }}">
+                                                    {{ role.role_name }}
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </td> 
+                             </tr>  
+                              <tr>
+                                  <td>SUB DEPARTMENT STATUS</td> 
+                                  <td>
+                                      <select name="sub_department_status" class="form-control"> 
+                                          <option value="1" {% if sub_department.status == 1 %}selected{%endif%}>Activate</option> 
+                                          <option value="0" {% if sub_department.status == 0 %}selected{%endif%}>Deactivate</option>
+                                      </select>
+                                  </td> 
+                                </tr>
+                              
+                            </table>
+                         </div> 
+                    </div>
+                </div> <br>   
+                <input type="submit" name="updateSubDepartmentSubmit" class="btn btn-primary" value="Submit">
+                </form> 
+          {% endif %}
+
+
+          {% if section == 'list_sub_department' %}
+          <h1 class="display-6">LIST ALL SUB DEPARTMENT</h1> 
+          <div class="btn-group"> 
+            <a href="{% url 'admin-list-department' %}" class="btn btn-sm btn-outline-dark">LIST DEPARTMENT</a>
+            <a href="{% url 'admin-list-sub-department' %}" class="btn btn-sm btn-outline-dark">LIST SUB DEPARTMENT</a>
+            <a href="{% url 'admin-create-department' %}" class="btn btn-sm btn-outline-dark">ADD DEPARTMENT</a>
+            <a href="{% url 'admin-create-sub-department' %}" class="btn btn-sm btn-outline-dark">ADD SUB DEPARTMENT</a>
+        </div>      
+          {% if messages %}
+              {% for message in messages %}
+                  {% if message.tags == 'error' %}
+                      <div class="alert alert-danger">{{ message }}</div>
+                  {% elif message.tags == 'success' %}
+                      <div class="alert alert-success">{{ message }}</div>
+                  {% endif %}
+              {% endfor %} 
+          {% endif %}  
+          <div class="border bg-light rounded-4">
+              <div class="justify-content-center" style="margin:20px">
+                   <div class="row">
+                      <table class="table table-light">
+                        <thead class="table-primary">
+                          <tr>
+                            <th>Sub Department Name</th>
+                            <th>Main Department Name</th>
+                            <th>Created By</th> 
+                            <th>Sub Department Status</th>
+                            <th>Status</th>  
+                         </tr>  
+                        </thead>
+                        <tbody> 
+                          {% for sD in sub_department %}
+                            <tr>
+                              <td>{{ sD.name }}</td>
+                              <td>{{ sD.department_id }}</td> 
+                              <td>{{ sD.created_user.username }}</td>
+                              <td>{{ sD.status }}</td>   
+                              <td> 
+                                <a href="{% url 'admin-update-sub-department' sD.id %}" class="btn btn-sm btn-outline-dark">Edit</a>
+                                <a href="{% url 'admin-delete-sub-department' sD.id %}" class="btn btn-sm btn-outline-dark">Delete</a>
+                            </td>
+                            </tr>
+                          {% endfor %} 
+                        </tbody>   
+                      </table>
+                   </div> 
+              </div>
+          </div>
+          {% endif %}
+
+
+
+                 
+
+          
+
+         </div>
+       </div>
+    </div>
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

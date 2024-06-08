@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Correspondence</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}  
+    <div class="container-fluid">  
+         
+                    {% if section == 'add' %}
+                       <div class="row center-content">
+                      <div class="col-6 text-center">
+                            <form method="post">
+                              {% csrf_token %} 
+                              {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == 'error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% elif message.tags == 'success' %}
+                                        <div class="alert alert-success">{{ message }}</div>
+                                    {% endif %} 
+                                {% endfor %} 
+                              {% endif %}  
+                              <h1 class="display-6">ADD CORRESPONDENCE</h1> 
+                              <div class="border bg-light rounded-4">
+                                  <div class="justify-content-center" style="margin:20px">
+                                      <div class="row">
+                                          <table class="table table-light table-responsive table-sm" style="font-size:13px">
+                                            <tr>
+                                              <td>Priority/<b class="fw-bold text-danger">Redcorner</b></td>
+                                              <td>
+                                                <select class="form-control bg-primary" name="priority">
+                                                  <option value="high" class="bg-danger">High</option> 
+                                                  <option value="medium" class="bg-warning">Medium</option>
+                                                  <option value="low" class="bg-success">Low</option>  
+                                                </select>
+                                              </td>
+                                          
+                                              <td>INT/EXT</td>
+                                              <td>
+                                                <select class="form-control bg-primary" name="int_ext"> 
+                                                  <option value="internal">INTERNAL</option>
+                                                  <option value="external">EXTERNAL</option>
+                                                </select>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Name Of Designation</td>
+                                              <td><input type="text" class="form-control bg-primary" placeholder="Receiver's Name" name="name_of_designation" required></td>
+                                              <td>Date Of Forwarding</td>
+                                              <td><input type="date" name="date_of_forwarding" class="form-control bg-primary" placeholder="Date Of Forwarding" required></td>
+                                            </tr>
+                                            <tr>
+                                              <td>Type Of Document</td>
+                                              <td><input type="text" name="type_of_doc" class="form-control bg-primary" placeholder="Email" required></td>
+                                              <td>DO Received From</td>
+                                              <td><input type="text" name="do_received_from" class="form-control bg-primary" placeholder="DO Received From" required></td>
+                                            </tr>
+                                            <tr>
+                                              <td>Reference Number</td>
+                                              <td><input type="text" class="form-control bg-primary" placeholder="Reference Number" name="reference_number" required></td>
+                                              <td>Reference Date</td>
+                                              <td><input type="date" class="form-control bg-primary" placeholder="Reference Date" name="reference_date" required></td>
+                                            </tr>
+                                            <tr>
+                                              <td>Subject</td>
+                                              <td><input type="text" name="subject" class="form-control bg-primary" placeholder="Subject" required></td>
+                                              <td>Action Marked</td>
+                                              <td><input type="text" name="action_marked" class="form-control bg-primary" placeholder="Action Marked" required></td> 
+                                            </tr>
+                                            
+                                              <tr>
+                                                <td>Upload the scanned documents</td> 
+                                                <td>
+                                                  <a href="javascript:void(0)" class="btn btn-primary btn-block" onclick="browseDocuments()"> + Browse Scanned Documents</a>
+                                                  <span id="selectedDocuments"></span> 
+                                                </td>
+                                                <td>Select Role</td> 
+                                                <td>
+                                                  <select class="form-control selected_role" name="role" required>
+                                                        <option>Select Role for forwarding</option>
+                                                     {% for role in roles %} 
+                                                        <option value="{{ role.id }}">{{ role.role_name }}</option>
+                                                      {% endfor %} 
+                                                  </select>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Staff Users</td> 
+                                                <td colspan="2">
+                                                  <select class="form-control selected-roles-users" name="selected-roles-users" required></select>
+                                                </td>
+                                                <td>Autoselect All Staff - <input type="checkbox" name="select_all_user" value="1" /></td>
+                                              </tr>
+                                              <tr>
+                                                <td>Status</td>
+                                                <td colspan="3">
+                                                  <select class="form-control" name="status">
+                                                    <option value="1">Active</option>
+                                                    <option value="0">Inactive</option>
+                                                  </select>
+                                                </td>
+                                              </tr>
+                                          </table>
+                                      </div> 
+                                  </div>
+                              </div><br>    
+                              <input type="submit" name="addCorrespondenceSubmit" class="btn btn-primary" value="Submit">
+                            </form> 
+                          </div>
+                        </div>
+                    {% endif %}
+                      
+                    {% if section == 'edit' %} 
+                        <div class="row center-content">
+                      <div class="col-6 text-center">
+                          <form method="post">
+                            {% csrf_token %} 
+                            {% if messages %}
+                              {% for message in messages %}
+                                  <div class="alert alert-danger">{{ message }}</div>
+                              {% endfor %}
+                            {% endif %}
+                          <h1 class="display-6">ADD CORRESPONDENCE</h1> 
+                          <div class="border bg-light rounded-4">
+                              <div class="justify-content-center" style="margin:20px">
+                                  <div class="row">
+                                      <table class="table">
+                                        <tr>
+                                          <td>Priority/<b class="fw-bold text-danger">Redcorner</b></td>
+                                          <td>
+                                            <select class="form-control bg-primary" name="priority">
+                                              <option value="yes">YES</option>
+                                              <option value="no">NO</option>
+                                            </select>
+                                          </td>
+                                      
+                                          <td>INT/EXT</td>
+                                          <td>
+                                            <select class="form-control bg-primary" name="int_ext">
+                                              <option value="internal">INTERNAL</option>
+                                              <option value="external">EXTERNAL</option>
+                                            </select>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>Name Of Designation</td>
+                                          <td><input type="text" class="form-control" placeholder="Name Of Designation" name="name_of_designation" required></td>
+                                          <td>Email ID</td>
+                                          <td><input type="text" class="form-control" placeholder="Receiver's Email" name="email_id"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Type Of Document</td>
+                                          <td><input type="text" name="type_of_doc" class="form-control" placeholder="Email"></td>
+                                          <td>DO Received From</td>
+                                          <td><input type="text" name="do_received_from" class="form-control" placeholder="DO Received From"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Reference Number</td>
+                                          <td><input type="text" class="form-control" placeholder="Reference Number" name="reference_number"></td>
+                                          <td>Reference Date</td>
+                                          <td><input type="text" class="form-control" placeholder="Reference Date" name="reference_date"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Subject</td>
+                                          <td><input type="text" name="subject" class="form-control" placeholder="Subject"></td>
+                                          <td>Action Marked</td>
+                                          <td><input type="text" name="action_marked" class="form-control" placeholder="Action Marked"></td> 
+                                        </tr>
+                                        <tr>
+                                          <td>Forwarded To</td>
+                                          <td><input type="text" name="forwarded_to" class="form-control" placeholder="Additional Emails"></td>
+                                          <td>Date Of Forwarding</td>
+                                          <td><input type="text" name="date_of_forwarding" class="form-control" placeholder="Date Of Forwarding"></td> 
+                                        </tr>
+                                        <tr>
+                                          <td>Upload the scanned documents</td>
+                                          <td>
+                                            <a href="javascript:void(0)" class="btn btn-primary btn-block" onclick="browseDocuments()"> + Browse Scanned Documents</a>
+                                          </td>
+                                          <td>Status</td>
+                                          <td>
+                                            <select class="form-control" name="status">
+                                              <option value="0">Save & Send Later</option>
+                                              <option value="1">Save & Send Now</option>
+                                            </select>
+                                          </td>
+                                        </tr>
+                                        
+                                      </table>
+                                  </div> 
+                              </div>
+                          </div> <br>   
+                          <input type="submit" name="editCorrespondenceSubmit" class="btn btn-primary" value="Submit">
+                          </form> 
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if section == 'list' %}
+                          <div class="row">
+                               {% include 'common/section.html' %}
+                                <h4 class="text-success">Total Correspondence - {{ corr_count }}</h4>
+                                <div class="col-12 text-center">
+                                  <h1 class="display-6">LIST CORRESPONDENCE ({{ corr_count }})</h1>
+                                  {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger">{{ message }}</div>
+                                        {% elif message.tags == 'success' %}
+                                            <div class="alert alert-success">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %} 
+                                  {% endif %}  
+                                  <a href="{% url 'add-correspondence' %}" class="btn btn-sm btn-primary">ADD CORRESPONDENCE</a><br><br>  
+                                  <div class="border bg-light rounded-4"> 
+                                      <div class="justify-content-center" style="margin:20px">
+                                          <div class="row">
+                                           
+                                            <table class="table table-light table-sm" style="font-size:13px">
+                                              <thead class="table-primary">
+                                                  <tr>
+                                                    <th>Corr No</th>
+                                                    <th>Priority|Redcorner</th>
+                                                    <th>Internal|External</th>
+                                                    <th>Name Of Designation</th>
+                                                    <!-- <th>Email ID</th> -->
+                                                    <th>Type Of Doc</th>
+                                                    <th>Do Receive From</th>
+                                                    <th>Reference Number</th>
+                                                    <th>Reference Date</th>
+                                                    <th>Subject</th>
+                                                    <th>Action Marked</th>
+                                                    <th>Date Of Forwarding</th>
+                                                    <th>Documents</th>
+                                                    <th>Forwarded To Role</th> 
+                                                    <th>Status</th>  
+                                                    <th>Action</th>
+                                                  </tr>
+                                                </thead> 
+                                                <tbody>
+                                                    {% for corr in correspondences %}
+                                                        <tr>
+                                                            <td>{{ corr.corr_no }}</td>
+                                                            <td>{{ corr.get_priority_display }}</td>
+                                                            <td>{{ corr.get_int_ext_display }}</td>
+                                                            <td>{{ corr.name_of_designation }}</td>
+                                                            <!-- <td>{{ corr.email_id }}</td> -->
+                                                            <td>{{ corr.type_of_doc }}</td>
+                                                            <td>{{ corr.do_received_from }}</td>
+                                                            <td>{{ corr.reference_number }}</td>
+                                                            <td>{{ corr.reference_date }}</td>
+                                                            <td>{{ corr.subject }}</td>
+                                                            <td>{{ corr.action_marked }}</td>
+                                                            <td>{{ corr.date_of_forwarding }}</td>
+                                                            <td>
+                                                              {% for document in corr.documents %}     
+                                                                <div>
+                                                                  {{ document.title }}|<a href="{% url 'view-monitoring-document' document.id 0 %}" class="text-decoration-none text-dark">{{ document.filename }}</a><br>                                                                  
+                                                                </div>
+                                                              {% endfor %}
+                                                            </td>
+                                                            
+                                                            <td>{{ corr.role }}</td>
+                                                            <td>
+                                                                {% if corr.status == 0 %}
+                                                                 <b class="text-danger">Inactive</b><br>
+                                                                 
+                                                                {% elif corr.status == 1 %}
+                                                                  <b class="text-success">Active</b>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td> 
+                                                                <!-- <a href="{% url 'forward-correspondence' corr.id %}" class="btn btn-sm btn-primary">Forward</a>                                                             -->
+                                                                <!-- <a href="{% url 'edit-correspondence' corr.id %}" class="btn btn-sm btn-outline-dark">Edit</a> -->
+                                                                <a href="{% url 'delete-correspondence' corr.id %}" class="btn btn-sm btn-outline-dark">Delete</a>                                                             
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                              </table>
+                                          </div>  
+                                      </div>
+                                  </div>
+                              
+                            </div>
+                          </div>
+                    {% endif %}   
+     
+    </div>
+
+    <div class="modal fade" id="openModal">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalToggleLabel">Use Only Opened Documents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-responsive" style="font-size:13px">
+              <thead class="table-primary">
+                  <tr>
+                    <th>Select</th>
+                    <th>From</th>
+                    <th>Message</th>
+                    <th>File</th>
+                    <th>Sended</th>
+                    <th>Is Opened</th> 
+                    <th>Is Forwarded</th> 
+                    <th>Status</th>
+                  </tr>
+              </thead>
+              <tbody>
+                 {% for msg in messagesObj %}
+                 <tr>
+                    <td>
+                      {% if msg.is_opened == 1 %}
+                      <input type="checkbox" class="documentsCheckbox" value="{{ msg.document_id }}"/>
+                      {% endif %}
+                      {% if msg.is_opened == 0 %}
+                      <input type="checkbox" class="documentsCheckbox" value="{{ msg.document_id }}" disabled />
+                      {% endif %}
+                    </td>
+                    <td>{{ msg.from_user.username }}</td>
+                    <td>{{ msg.message }}</td>
+                    <td>{{ msg.document.title }} | {{ msg.document.filename }}</td>
+                    <td>{{ msg.created }}</td>
+                     <td>
+                        {% if msg.is_opened == 1 %}
+                          <b class="text-success">Opened ✔️</b>
+                        {% elif msg.is_opened == 0 %}
+                          <b class="text-dark">Pending ⚠️</b> 
+                        {% else %}
+                          Unknown
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if msg.is_forwarded == 1 %}
+                          <b class="text-success">Yes</b>
+                        {% elif msg.is_forwarded == 0 %}
+                          <b class="text-dark">No</b> 
+                        {% else %}
+                          Unknown
+                        {% endif %}
+                      </td>  
+                      <td>  
+                        {% if msg.status == 1 %}
+                          <b class="text-success">Active</b>
+                        {% elif msg.status == 2 %}
+                          <b class="text-dark">Inactive</b>  
+                        {% else %}
+                          Unknown
+                        {% endif %}
+                      </td> 
+                  </tr>
+                  {% endfor %} 
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <a href="javascript:void(0)" class="btn btn-primary addSelectedDoc">Add Selected Documents</a> 
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+     <script src="{% static 'js/script.js' %}"></script>  
+  </body>
+</html>

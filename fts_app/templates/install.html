@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body> 
+    <div class="container">
+       <div class="row center-content">
+         <div class="col-5 text-center">
+           <img src="{% static 'images/logo.png' %}" style="width: 400px;"/><br><br><br>
+           <h1 class="display-6">GMS FILE TRACKING SYSTEM</h1>
+
+
+         {% if request.session.user_id %}
+             <br>
+             <a href="{% url request.session.home_url %}" class="btn btn-outline-dark">BACK TO DASHBOARD</a>
+         {% else %}
+            <h3>Create Default Record</h3>
+            <form method="post" action="{% url 'install' %}">  
+                <br> 
+                <input type="submit" class="btn btn-primary btn-lg" value="Press To Install"/>
+                <br><br>
+                <hr>
+                {% csrf_token %} 
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% elif message.tags == 'success' %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %} 
+                {% endif %}  
+            </form>
+         {% endif %}   
+            
+
+         </div>
+       </div>
+    </div>
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

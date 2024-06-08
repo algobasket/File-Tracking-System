@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DakGhar</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}
+    <div class="container">
+       <div class="row center-content">
+         <div class="col-5 text-center">
+            {% include 'common/section.html' %}
+            <form method="post" class="needs-validation" novalidate>
+              {% csrf_token %} 
+              {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% elif message.tags == 'success' %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endif %}
+                {% endfor %} 
+              {% endif %}  
+            <div class="border bg-light rounded-4">
+                <div class="justify-content-center" style="margin:20px">
+                     <div class="row mb-3">
+                        <a href="{% url 'add-correspondence' %}" name="add_correspondence" class="btn btn-outline-dark fw-bold">ADD CORRESPONDENCES</a>
+                     </div> 
+                     <div class="row mb-3">
+                        <a href="{% url 'list-correspondence' %}" name="modify_correspondence" class="btn btn-outline-dark fw-bold">MODIFY CORRESPONDENCES</a>
+                     </div>
+                     <div class="row mb-3">
+                        <a href="{% url 'monitoring-documents' %}" name="monitoring_of_documents" class="btn btn-outline-dark fw-bold">MONITORING OF DOCUMENTS</a>  
+                     </div>  
+                </div>
+            </div>
+            <br>     
+
+            </form> 
+
+         </div>
+       </div>
+    </div>
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Departmental Access</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}
+
+
+      {% if section == 'dashboard-account' %}
+
+           <div class="container">
+             <div class="row center-content">
+               <div class="col-5 text-center">
+                  {% include 'common/section.html' %}
+                  <h1 class="display-6">ACCOUNT</h1>
+                    <form method="post">
+                        {% csrf_token %} 
+                        {% if messages %}
+                          {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                                  <div class="alert alert-danger">{{ message }}</div>
+                              {% elif message.tags == 'success' %}
+                                  <div class="alert alert-success">{{ message }}</div>
+                              {% endif %}
+                          {% endfor %} 
+                        {% endif %}  
+                        <div class="border bg-light rounded-4">
+                            <div class="justify-content-center" style="margin:20px">
+                                 {% for user_info in user_data %}
+                                    {% for detail in user_info.user_details %}
+                                 <div class="row">
+                                    <form method="post">
+                                    <table class="table">
+            
+                                    <tr>
+                                      <td>USERNAME*</td> 
+                                      <td><input type="text" name="username" class="form-control" disabled placeholder="Username" value="{{ user_info.user.username }}"></td> 
+                                    </tr>
+                                    <tr>
+                                      <td>PASSWORD*</td>
+                                      <td><a href="javascript:void(0)" class="btn btn-outline-dark btn-sm changePassPopup">Change Password</a></td>
+                                    </tr>
+                                    <tr>
+                                      <td>FULL NAME</td>
+                                      <td><input type="text" name="full_name" class="form-control" placeholder="Full Name" value="{{ detail.full_name }}" required /></td>
+                                    </tr>
+                                    <tr>
+                                      <td>PHONE*</td>
+                                      <td><input type="text" name="phone" class="form-control" placeholder="Phone" value="{{ detail.phone }}" required></td>  
+                                    </tr>
+                                    <tr>
+                                      <td colspan="2"><input type="submit" name="submit" class="btn btn-sm btn-outline-primary" value="Update Info" /></td>  
+                                    </tr>
+                                  </table>
+                                  </form>
+                                 </div>   
+                                     {% endfor %}
+                                 {% endfor %}
+                            </div>
+                        </div>
+                      <br>      
+                    </form> 
+               </div>
+             </div>
+          </div>
+      {% endif %}    
+
+
+     <div class="modal fade" id="openModal">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalToggleLabel">📩 Change Password</h5>  
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <input type="text" class="form-control passwordTxt" placeholder="Enter your new password" /><br>
+              <a href="javascript:void(0)" class="btn btn-outline-dark btn-sm submitPassword">Submit</a>
+              <span class="password-change"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+     <script src="{% static 'js/script.js' %}"></script>   
+     <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+     
+  </body>
+</html>

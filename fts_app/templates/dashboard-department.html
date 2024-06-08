@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Departmental Access</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}
+
+
+                {% if section == 'dashboard_department' %}
+
+                     <div class="container">
+                       <div class="row center-content">
+                         <div class="col-5 text-center">
+                            {% include 'common/section.html' %}
+                              <form method="post" class="needs-validation" novalidate>
+                                {% csrf_token %} 
+                                {% if messages %}
+                                  {% for message in messages %}
+                                      {% if message.tags == 'error' %}
+                                          <div class="alert alert-danger">{{ message }}</div>
+                                      {% elif message.tags == 'success' %}
+                                          <div class="alert alert-success">{{ message }}</div>
+                                      {% endif %}
+                                  {% endfor %} 
+                                {% endif %}  
+                                  <div class="border bg-light rounded-4">
+                                      <div class="justify-content-center" style="margin:20px">
+                                           <div class="row mb-3">
+                                              <a href="{% url 'dashboard-department-incoming-correspondence' %}" name="add_correspondence" class="btn btn-outline-dark fw-bold">INCOMING CORRESPONDENCES({{corr_count.received_corr_count}})</a>
+                                           </div>   
+                                           <div class="row mb-3">
+                                              <a href="{% url 'dashboard-department-outgoing-correspondence' %}" name="modify_correspondence" class="btn btn-outline-dark fw-bold">FORWARDED CORRESPONDENCES({{corr_count.forwarded_corr_count}})</a>
+                                           </div>
+                                      </div>
+                                  </div>
+                                <br>      
+                              </form> 
+                         </div>
+                       </div>
+                    </div>
+                {% endif %}  
+
+
+    
+                {% if section == 'incoming_list' %}
+                   <div class="container-fluid">
+                          <div class="row">
+                                {% include 'common/section.html' %}
+                                <h4 class="text-success">Received Correspondence - {{corr_count.received_corr_count}}, </h4>
+                                <h4 class="text-success">Forwarded Correspondence - {{corr_count.forwarded_corr_count}}, </h4>
+                                <div class="col-12 text-center">
+                                  <h1 class="display-6">INCOMING/RECEIVED CORRESPONDENCE</h1>
+                                  {% csrf_token %} 
+                                  {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger">{{ message }}</div>
+                                        {% elif message.tags == 'success' %}
+                                            <div class="alert alert-success">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %} 
+                                  {% endif %}   
+                                  <br><br>  
+                                  <div class="border bg-light rounded-4">
+                                      <div class="justify-content-center" style="margin:20px">
+                                          <div class="row">
+                                           
+                                            <table class="table table-sm table-light" style="font-size: 13px;">
+                                              <thead class="table-primary">
+                                                  <tr>
+                                                    <th>From</th>
+                                                    <th>Corr No</th>
+                                                    <th>Priority|Redcorner</th>
+                                                    <th>Internal|External</th>
+                                                    <th>Name Of Designation</th>
+                                                    <th>Email ID</th>
+                                                    <th>Type Of Doc</th>
+                                                    <th>Do Receive From</th>
+                                                    <th>Reference Number</th>
+                                                    <th>Reference Date</th>
+                                                    <th>Subject</th>
+                                                    <th>Action Marked</th>
+                                                    <th>Date Of Forwarding</th>
+                                                    <th>Documents</th>
+                                                    <th>Message</th>
+                                                    <!-- <th>Mark As Read</th>  -->
+                                                    <th>Is Opened</th> 
+                                                    <th>Is Forwarded</th> 
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                  </tr>
+                                                </thead> 
+                                                <tbody>
+                                                    {% for corr in correspondences %}
+                                                        <tr>
+                                                            <th>{{ corr.from_user_role_name }}</th>
+                                                            <td>{{ corr.correspondence__corr_no }}</td>
+                                                            <td>{{ corr.correspondence__priority }}</td>
+                                                            <td>{{ corr.correspondence__int_ext }}</td>
+                                                            <td>{{ corr.correspondence__name_of_designation }}</td>
+                                                            <td>{{ corr.correspondence__email_id }}</td>
+                                                            <td>{{ corr.correspondence__type_of_doc }}</td>
+                                                            <td>{{ corr.correspondence__do_received_from }}</td>
+                                                            <td>{{ corr.correspondence__reference_number }}</td>
+                                                            <td>{{ corr.correspondence__reference_date }}</td>
+                                                            <td>{{ corr.correspondence__subject }}</td>
+                                                            <td>{{ corr.correspondence__action_marked }}</td>
+                                                            <td>{{ corr.correspondence__date_of_forwarding }}</td>
+                                                            <td> 
+                                                              {% for document in corr.documents %}
+                                                                  <b class="text-success">{{ document.title }}</b> 
+                                                                  - <a href="{% url 'view-correspondence-document' document.id corr.id %}" class="text-decoration-none text-dark">{{ document.filename }}</a><br>
+                                                              {% endfor %}
+                                                            </td>
+                                                            <td><a href="javascript:void(0)" data-msg="{{ corr.message }}" class="message_note">📩</a></td> 
+                                                            <!-- <td>
+                                                                {% if corr.is_opened == 0 %}
+                                                                <input type="checkbox" class="corr_opened" value="{{ corr.id }}" />
+                                                                {% else %}
+                                                                 <div class="form-check">
+                                                                   <input type="checkbox" value="{{ corr.id }}" checked/>
+                                                                   <label class="form-check-label" for="flexCheckChecked">
+                                                                      Checked
+                                                                    </label>  
+                                                                 </div>
+                                                                {% endif %}
+                                                                </td> -->
+                                                                <td>
+                                                                {% if corr.is_opened == 1 %}
+                                                                  <b class="text-success">Opened ✔️</b>
+                                                                {% elif corr.is_opened == 0 %}
+                                                                  <b class="text-dark">Pending ⚠️</b> 
+                                                                {% else %}
+                                                                  Unknown
+                                                                {% endif %}
+                                                              </td>
+                                                              <td>
+                                                                {% if corr.is_forwarded == 1 %}
+                                                                  <b class="text-success">Yes ✔️</b>
+                                                                {% elif corr.is_forwarded == 0 %}
+                                                                  <b class="text-dark">No</b> 
+                                                                {% else %}
+                                                                  Unknown
+                                                                {% endif %}
+                                                              </td>  
+                                                              <td>
+                                                                  {% if corr.status == 0 %}
+                                                                   <b class="text-danger">Inactive</b>
+                                                                  {% elif corr.status == 1 %}
+                                                                    <b class="text-success">Active</b> 
+                                                      
+                                                                  {% endif %}
+                                                              </td>
+                                                            <td>
+                                                              {% if corr.is_opened == 1 %}         
+                                                                 <a href="{% url 'forward-departmental-correspondence' corr.id corr.correspondence__id %}" class="btn btn-sm btn-outline-dark">Forward Now</a>
+                                                              {% elif corr.is_opened == 0 %}   
+                                                                 <a href="" class="btn btn-sm btn-outline-dark disabled">Forward Now</a>
+                                                              {% endif %}   
+                                                            </td> 
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                              </table>
+                                          </div>  
+                                      </div>
+                                  </div>
+                            </div>
+                          </div>
+                           </div>
+                      {% endif %}
+
+
+
+
+
+                      {% if section == 'outgoing_list' %}
+                   <div class="container-fluid">
+                          <div class="row">
+                                {% include 'common/section.html' %}
+                                <h4 class="text-success">Received Correspondence - {{corr_count.received_corr_count}}, </h4>
+                                <h4 class="text-success">Forwarded Correspondence - {{corr_count.forwarded_corr_count}}, </h4>
+                                <div class="col-12 text-center">
+                                  <h1 class="display-6">FORWARDED CORRESPONDENCE ({{corr_count.forwarded_corr_count}})</h1>
+                                  {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger">{{ message }}</div>
+                                        {% elif message.tags == 'success' %}
+                                            <div class="alert alert-success">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %} 
+                                  {% endif %}   
+                                  <br><br>  
+                                  <div class="border bg-light rounded-4">
+                                      <div class="justify-content-center" style="margin:20px">
+                                          <div class="row">
+                                           
+                                            <table class="table table-sm table-light" style="font-size: 13px;">
+                                              <thead class="table-primary">
+                                                  <tr>
+                                                    <th>To</th>
+                                                    <th>Corr No</th>
+                                                    <th>Priority|Redcorner</th>
+                                                    <th>Internal|External</th>
+                                                    <th>Name Of Designation</th>
+                                                  
+                                                    <th>Type Of Doc</th>
+                                                    <th>Do Receive From</th>
+                                                    <th>Reference Number</th>
+                                                    <th>Reference Date</th>
+                                                    <th>Subject</th>
+                                                    <th>Action Marked</th>
+                                                    <th>Date Of Forwarding</th>
+                                                    <th>Documents</th>
+                                                    
+                                                    <th>Is Opened</th>
+                                                    <th>Is Forwarded</th>
+                                                    <th>Status</th>
+                                                  </tr>
+                                                </thead> 
+                                                <tbody>
+                                                    {% for corr in correspondences %}
+                                                        <tr>
+                                                            <th>{{ corr.to_user_role_name }}</th>
+                                                            <td>{{ corr.correspondence__corr_no }}</td>
+                                                            <td>{{ corr.correspondence__priority }}</td>
+                                                            <td>{{ corr.correspondence__int_ext }}</td>
+                                                            <td>{{ corr.correspondence__name_of_designation }}</td>
+                                                          
+                                                            <td>{{ corr.correspondence__type_of_doc }}</td>
+                                                            <td>{{ corr.correspondence__do_received_from }}</td>
+                                                            <td>{{ corr.correspondence__reference_number }}</td>
+                                                            <td>{{ corr.correspondence__reference_date }}</td>
+                                                            <td>{{ corr.correspondence__subject }}</td>
+                                                            <td>{{ corr.correspondence__action_marked }}</td>
+                                                            <td>{{ corr.correspondence__date_of_forwarding }}</td>
+                                                            <td>
+                                                              {% for document in corr.documents %} 
+                                                                  <b class="text-success">{{ document.title }}</b> 
+                                                                - <a href="{% url 'view-monitoring-document' document.id 0 %}" class="text-decoration-none text-dark">{{ document.filename }}</a><br>
+                                                              {% endfor %}
+                                                            </td>
+                                                           
+                                                            <td>
+                                                              {% if corr.is_opened == 1 %}
+                                                                <b class="text-success">Opened ✔️</b>
+                                                              {% elif corr.is_opened == 0 %}
+                                                                <b class="text-dark">Pending ⚠️</b> 
+                                                              {% else %}
+                                                                Unknown
+                                                              {% endif %}
+                                                            </td>
+                                                            <td>
+                                                              {% if corr.is_forwarded == 1 %}
+                                                                <b class="text-success">Yes</b>
+                                                              {% elif corr.is_forwarded == 0 %}
+                                                                <b class="text-dark">No</b> 
+                                                              {% else %}
+                                                                Unknown
+                                                              {% endif %}
+                                                            </td>  
+                                                            <td>
+                                                                {% if corr.status == 0 %}
+                                                                 <b class="text-danger">Inactive</b>
+                                  
+                                                                {% elif corr.status == 1 %}
+                                                                  <b class="text-success">Active</b>
+                                                          
+                                                                {% endif %}
+                                                            </td>
+                                                           
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                              </table>
+                                          </div>  
+                                      </div>
+                                  </div>
+                            </div>
+                          </div>
+                           </div>
+                      {% endif %}
+
+
+
+
+
+                      {% if section == 'forwarding' %}
+                   <div class="container-fluid">
+                          <div class="row">
+                                 {% include 'common/section.html' %}
+                                <h4 class="text-success">Received Correspondence - {{corr_count.received_corr_count}}, </h4>
+                                <h4 class="text-success">Forwarded Correspondence - {{corr_count.forwarded_corr_count}}, </h4>
+                                <div class="col-12 text-center">
+                                  <h1 class="display-6">FORDWARDING CORRESPONDENCE</h1>
+                                  {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger">{{ message }}</div>
+                                        {% elif message.tags == 'success' %}
+                                            <div class="alert alert-success">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %} 
+                                  {% endif %}   
+                                  
+                                  <div class="border bg-light rounded-4">
+                                      <div class="justify-content-center" style="margin:20px">
+                                          <div class="row"> 
+                                           {% with correspondence_map_id=request.resolver_match.kwargs.correspondence_map_id %}
+                                             {% with correspondence_id=request.resolver_match.kwargs.correspondence_id %}
+                                           
+                                                       <form method="post" action="{% url 'forward-departmental-correspondence' correspondence_map_id correspondence_id %}">
+                                                        {% csrf_token %}
+                                                        <table class="table table-light">
+                                                          <thead class="table-primary">
+                                                              <tr>
+                                                                <th colspan="2">SELECT ROLES TO FORWARD</th>                                                                         
+                                                              </tr>
+                                                            </thead> 
+                                                            <tbody>
+                                            
+                                                                <tr>
+                                                                    <td style="width: 150px;">Forward To </td>
+                                                                    <td>
+                                                                      <select class="form-control selected_role" name="selectDepartmentRole" required>
+                                                                        <option disabled selected>Select Role for forwarding</option>
+                                                                        {% for role in roles %} 
+                                                                          <option value="{{ role.id }}"> 
+                                                                            <b>{{ role.role_name }}</b>
+                                                                          </option>  
+                                                                        {% endfor %}
+                                                                      </select>  
+                                                                    </td>  
+                                                                </tr>
+                                                                <tr> 
+                                                                  <td>Staff Users</td> 
+                                                                  <td colspan="2">
+                                                                    <div class="row">
+                                                                      <div class="col-md-8"><select class="form-control selected-roles-users" name="selected-roles-users" required></select></div>
+                                                                      <div class="col-md-4 fw-bold text-success">Autoselect All Staff - <input type="checkbox" name="select_all_user" value="1" /></div>
+                                                                    </div>
+                                                                  </td>
+                                                                 
+                                                                </tr>
+                                                                <tr> 
+                                                                  <td>Message/Note</td> 
+                                                                  <td colspan="2">
+                                                                    <textarea class="form-control" name="message" placeholder="Write a comment or message.."></textarea>
+                                                                  </td>
+                                                                 
+                                                                </tr>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <td>
+                                                                      <input type="submit" name="addCorrespondenceForwardSubmit" class="btn btn-primary">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                          </table>
+                                                          </form>
+                                                     
+                                                {% endwith %}
+                                             {% endwith %}
+                                          </div>  
+                                      </div>
+                                  </div>
+                            </div>
+                          </div>
+                           </div>
+                      {% endif %}         
+     
+
+       <div class="modal fade" id="openModal">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalToggleLabel">📩 Message</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body showMsg text-center"></div>
+          </div>
+        </div>
+      </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+     <script src="{% static 'js/script.js' %}"></script>   
+     <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+   
+  </body>
+</html>

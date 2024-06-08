@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body> 
+    <div class="container-fluid">
+       <div class="row center-content">
+         <div class="col-12 text-center">
+           <img src="{% static 'images/logo.png' %}" style="width: 400px;"/><br><br><br>
+           <h1 class="display-6">GMS FILE TRACKING SYSTEM</h1>
+           
+            {% if section == 'daily_entry_report' %}
+             <h3>Daily Entry Report 📝</h3>
+             <table class="table table-borderless">
+             	<thead>
+             		<th></th>
+             		<th></th>
+             		<th></th>
+             		<th></th>
+             	</thead>
+             	<tbody>
+             		<td></td>
+             		<td></td>
+             		<td></td>
+             		<td></td>
+             	</tbody>
+             </table>
+			{% endif %}
+
+			{% if section == 'red_cornered_open' %}
+			 <h3>Red Cornered Documents📕 (Open) </h3>
+			  <table class="table table-light table-sm" style="font-size:13px">
+                  <thead class="table-primary">
+                      <tr>
+                        <th>Corr No</th>
+                        <th>Priority|Redcorner</th>
+                        <th>Internal|External</th>
+                        <th>Name Of Designation</th>
+                        <th>Email ID</th>
+                        <th>Type Of Doc</th>
+                        <th>Do Receive From</th>
+                        <th>Reference Number</th>
+                        <th>Reference Date</th>
+                        <th>Subject</th>
+                        <th>Action Marked</th>
+                        <th>Date Of Forwarding</th>
+                        <th>Documents</th>
+                        <th>Sent To Role</th> 
+                        <th>Status</th>  
+                        
+                      </tr>
+                    </thead> 
+                    <tbody>
+                        {% for corr in correspondences %}
+                            <tr>
+                                <td>{{ corr.corr_no }}</td>
+                                <td><b class="text-danger">{{ corr.get_priority_display }}</b></td>
+                                <td>{{ corr.get_int_ext_display }}</td>
+                                <td>{{ corr.name_of_designation }}</td>
+                                <td>{{ corr.email_id }}</td>
+                                <td>{{ corr.type_of_doc }}</td>
+                                <td>{{ corr.do_received_from }}</td>
+                                <td>{{ corr.reference_number }}</td>
+                                <td>{{ corr.reference_date }}</td>
+                                <td>{{ corr.subject }}</td>
+                                <td>{{ corr.action_marked }}</td>
+                                <td>{{ corr.date_of_forwarding }}</td>
+                                <td>
+                                  {% for document in corr.documents %}     
+                                    <div>
+                                      {{ document.title }}|<a href="{% url 'view-monitoring-document' document.id 0 %}" class="text-decoration-none text-dark">{{ document.filename }}</a><br>                                                                  
+                                    </div>
+                                  {% endfor %}
+                                </td>
+                                
+                                <td>{{ corr.role }}</td>
+                                <td>
+                                    {% if corr.status == 0 %}
+                                     <b class="text-danger">Inactive</b><br>
+                                     
+                                    {% elif corr.status == 1 %}
+                                      <b class="text-success">Active</b>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+               </table>
+
+			{% endif %}
+
+			{% if section == 'red_cornered_closed' %}
+			 <h3>Red Cornered Documents📗 (Closed) </h3>
+              <table class="table table-light table-sm" style="font-size:13px">
+                  <thead class="table-primary">
+                      <tr>
+                        <th>Corr No</th>
+                        <th>Priority|Redcorner</th>
+                        <th>Internal|External</th>
+                        <th>Name Of Designation</th>
+                        <th>Email ID</th>
+                        <th>Type Of Doc</th>
+                        <th>Do Receive From</th>
+                        <th>Reference Number</th>
+                        <th>Reference Date</th>
+                        <th>Subject</th>
+                        <th>Action Marked</th>
+                        <th>Date Of Forwarding</th>
+                        <th>Documents</th>
+                        <th>Sent To Role</th> 
+                        <th>Status</th>  
+                        
+                      </tr>
+                    </thead> 
+                    <tbody>
+                        {% for corr in correspondences %}
+                            <tr>
+                                <td>{{ corr.corr_no }}</td>
+                                <td><b class="text-danger">{{ corr.get_priority_display }}</b></td>
+                                <td>{{ corr.get_int_ext_display }}</td>
+                                <td>{{ corr.name_of_designation }}</td>
+                                <td>{{ corr.email_id }}</td>
+                                <td>{{ corr.type_of_doc }}</td>
+                                <td>{{ corr.do_received_from }}</td>
+                                <td>{{ corr.reference_number }}</td>
+                                <td>{{ corr.reference_date }}</td>
+                                <td>{{ corr.subject }}</td>
+                                <td>{{ corr.action_marked }}</td>
+                                <td>{{ corr.date_of_forwarding }}</td>
+                                <td>
+                                  {% for document in corr.documents %}     
+                                    <div>
+                                      {{ document.title }}|<a href="{% url 'view-monitoring-document' document.id 0 %}" class="text-decoration-none text-dark">{{ document.filename }}</a><br>                                                                  
+                                    </div>
+                                  {% endfor %}
+                                </td>
+                                
+                                <td>{{ corr.role }}</td>
+                                <td>
+                                    {% if corr.status == 0 %}
+                                     <b class="text-danger">Inactive</b><br>
+                                     
+                                    {% elif corr.status == 1 %}
+                                      <b class="text-success">Active</b>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+               </table>
+
+			{% endif %}
+
+			{% if section == 'all_documents_open_closed' %}
+			 <h3>All Documents 📝 (Open & Closed)</h3>
+               <table class="table table-light table-sm" style="font-size:13px">
+                  <thead class="table-primary">
+                      <tr>
+                        <th>Corr No</th>
+                        <th>Priority|Redcorner</th>
+                        <th>Internal|External</th>
+                        <th>Name Of Designation</th>
+                        <th>Email ID</th>
+                        <th>Type Of Doc</th>
+                        <th>Do Receive From</th>
+                        <th>Reference Number</th>
+                        <th>Reference Date</th>
+                        <th>Subject</th>
+                        <th>Action Marked</th>
+                        <th>Date Of Forwarding</th>
+                        <th>Documents</th>
+                        <th>Sent To Role</th> 
+                        <th>Status</th>  
+                        
+                      </tr>
+                    </thead> 
+                    <tbody>
+                        {% for corr in correspondences %}
+                            <tr>
+                                <td>{{ corr.corr_no }}</td>
+                                <td><b class="text-danger">{{ corr.get_priority_display }}</b></td>
+                                <td>{{ corr.get_int_ext_display }}</td>
+                                <td>{{ corr.name_of_designation }}</td>
+                                <td>{{ corr.email_id }}</td>
+                                <td>{{ corr.type_of_doc }}</td>
+                                <td>{{ corr.do_received_from }}</td>
+                                <td>{{ corr.reference_number }}</td>
+                                <td>{{ corr.reference_date }}</td>
+                                <td>{{ corr.subject }}</td>
+                                <td>{{ corr.action_marked }}</td>
+                                <td>{{ corr.date_of_forwarding }}</td>
+                                <td>
+                                  {% for document in corr.documents %}     
+                                    <div>
+                                      {{ document.title }}|<a href="{% url 'view-monitoring-document' document.id 0 %}" class="text-decoration-none text-dark">{{ document.filename }}</a><br>                                                                  
+                                    </div>
+                                  {% endfor %}
+                                </td>
+                                
+                                <td>{{ corr.role }}</td>
+                                <td>
+                                    {% if corr.status == 0 %}
+                                     <b class="text-danger">Inactive</b><br>
+                                     
+                                    {% elif corr.status == 1 %}
+                                      <b class="text-success">Active</b>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+               </table>
+
+			{% endif %}
+
+			{% if section == 'all_documents_closed' %}
+			 <h3>All Documents 📝 (Closed)</h3>
+              <table class="table table-light table-sm" style="font-size:13px">
+                  <thead class="table-primary">
+                      <tr>
+                        <th>Corr No</th>
+                        <th>Priority|Redcorner</th>
+                        <th>Internal|External</th>
+                        <th>Name Of Designation</th>
+                        <th>Email ID</th>
+                        <th>Type Of Doc</th>
+                        <th>Do Receive From</th>
+                        <th>Reference Number</th>
+                        <th>Reference Date</th>
+                        <th>Subject</th>
+                        <th>Action Marked</th>
+                        <th>Date Of Forwarding</th>
+                        <th>Documents</th>
+                        <th>Sent To Role</th> 
+                        <th>Status</th>  
+                        
+                      </tr>
+                    </thead> 
+                    <tbody>
+                        {% for corr in correspondences %}
+                            <tr>
+                                <td>{{ corr.corr_no }}</td>
+                                <td><b class="text-danger">{{ corr.get_priority_display }}</b></td>
+                                <td>{{ corr.get_int_ext_display }}</td>
+                                <td>{{ corr.name_of_designation }}</td>
+                                <td>{{ corr.email_id }}</td>
+                                <td>{{ corr.type_of_doc }}</td>
+                                <td>{{ corr.do_received_from }}</td>
+                                <td>{{ corr.reference_number }}</td>
+                                <td>{{ corr.reference_date }}</td>
+                                <td>{{ corr.subject }}</td>
+                                <td>{{ corr.action_marked }}</td>
+                                <td>{{ corr.date_of_forwarding }}</td>
+                                <td>
+                                  {% for document in corr.documents %}     
+                                    <div>
+                                      {{ document.title }}|<a href="{% url 'view-monitoring-document' document.id 0 %}" class="text-decoration-none text-dark">{{ document.filename }}</a><br>                                                                  
+                                    </div>
+                                  {% endfor %}
+                                </td>
+                                
+                                <td>{{ corr.role }}</td>
+                                <td>
+                                    {% if corr.status == 0 %}
+                                     <b class="text-danger">Inactive</b><br>
+                                     
+                                    {% elif corr.status == 1 %}
+                                      <b class="text-success">Active</b>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+               </table>
+
+			{% endif %}
+           
+         </div>
+       </div>
+    </div>
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>
+

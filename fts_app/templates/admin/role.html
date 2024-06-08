@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DakGhar</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}
+
+   
+           
+            
+
+                {% if section == 'add' %}
+                <div class="container-fluid">
+                  <div class="row">
+                    {% include 'common/section.html' %}
+                    <div class="col text-center">
+                      <form method="post">
+                        {% csrf_token %} 
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% elif message.tags == 'success' %}
+                                    <div class="alert alert-success">{{ message }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}   
+                      <h1 class="display-6">ADD ROLE</h1> 
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                               <div class="row">
+                                  <table class="table table-light">
+                                    <tr>
+                                      <td>ROLE NAME</td>
+                                      <td><input type="text" name="role_name" class="form-control bg-primary" placeholder="Add Role Name without space" required></td> 
+                                    </tr>
+                                    <tr>
+                                        <td>DESCRIPTION</td> 
+                                        <td><textarea name="role_description" class="form-control bg-primary" placeholder="Add Role Description" required></textarea></td> 
+                                      </tr>
+                                    
+                                  </table>
+                               </div> 
+                          </div>
+                      </div> <br>   
+                      <input type="submit" name="addRoleSubmit" class="btn btn-primary" value="Submit"> 
+                      </form> 
+                    </div>
+                  </div>
+                </div>      
+                {% endif %}
+
+
+                {% if section == 'edit' %} 
+                <div class="container-fluid">
+                  <div class="row">
+                    {% include 'common/section.html' %}
+                    <div class="col text-center">
+                       <form method="post">
+                        {% csrf_token %} 
+                        {% if messages %}
+                          {% for message in messages %}
+                              <div class="alert alert-danger">{{ message }}</div>
+                          {% endfor %}
+                        {% endif %}
+                      <h1 class="display-6">EDIT ROLE</h1> 
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                               <div class="row">
+                                  <table class="table">
+            
+                                    <tr>
+                                      <td>USERNAME</td>
+                                      <td><input type="text" name="username" class="form-control bg-primary" placeholder="Username"></td> 
+                                    </tr>
+                                    <tr>
+                                      <td>PASSWORD</td>
+                                      <td><input type="text" name="password" class="form-control bg-primary" placeholder="Password"></td>
+                                    </tr>
+                                    <tr>
+                                      <td>ROLE</td> 
+                                      <td>
+                                        <select class="form-control" name="role">
+                                          <option>ADMIN</option>
+                                          <option>GMS</option>
+                                          <option>DAK</option>
+                                        </select>
+                                      </td>
+                                    </tr>
+                            
+                                    
+                                  </table>
+                               </div> 
+                          </div>
+                      </div> <br>   
+                      <input type="submit" name="addCorrespondenceSubmit" class="btn btn-primary" value="Submit">
+                      </form> 
+                    </div>
+                  </div>
+                </div>       
+                {% endif %}
+
+
+                {% if section == 'list' %}
+                <div class="container-fluid">
+                  <div class="row">
+                    {% include 'common/section.html' %}
+                    <div class="col text-center">
+                      <h1 class="display-6">LIST ALL ROLES 
+                        <a href="{% url 'admin-add-role' %}" class="btn btn-sm btn-light">ADD ROLE</a>
+                      </h1>  
+                      {% if messages %}
+                          {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                                  <div class="alert alert-danger">{{ message }}</div>
+                              {% elif message.tags == 'success' %}
+                                  <div class="alert alert-success">{{ message }}</div>
+                              {% endif %}
+                          {% endfor %} 
+                      {% endif %}  
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                              <div class="row">
+                                  <table class="table table-sm table-light" style="font-size:13px">
+                                    <thead class="table-primary">
+                                      <tr>
+                                        <th>Role Name</th>
+                                        <th>Role Description</th>
+                                        <th></th>  
+                                    </tr>  
+                                    </thead>
+                                    <tbody> 
+                                      {% for role in roles %}
+                                        <tr>
+                                          <td>{{ role.role_name }}</td>
+                                          <td>{{ role.description }}</td> 
+                                          <td><a href="{% url 'admin-delete-role' role.id %}" class="btn btn-sm btn-outline-dark">Delete</a></td>
+                                        </tr>
+                                      {% endfor %} 
+                                    </tbody>
+                                  
+                                  </table>
+                              </div> 
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>       
+                {% endif %}
+
+
+                 
+
+          
+
+     
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

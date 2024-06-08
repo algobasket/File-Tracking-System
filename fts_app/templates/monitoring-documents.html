@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DakGhar</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+    {% include 'common/menu.html' %}
+
+    
+           
+            
+
+                {% if section == 'add' %}
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col text-center">
+                      <form method="post">
+                        {% csrf_token %} 
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% elif message.tags == 'success' %}
+                                    <div class="alert alert-success">{{ message }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}   
+                      <h1 class="display-6">ADD ROLE</h1> 
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                               <div class="row">
+                                  <table class="table table-light table-sm" style="font-size:13px">
+                                    <tr>
+                                      <td>ROLE NAME</td>
+                                      <td><input type="text" name="role_name" class="form-control bg-primary" placeholder="Add Role Name without space" required></td> 
+                                    </tr>
+                                    <tr>
+                                        <td>DESCRIPTION</td> 
+                                        <td><textarea name="role_description" class="form-control bg-primary" placeholder="Add Role Description" required></textarea></td> 
+                                      </tr>
+                                    
+                                  </table>
+                               </div> 
+                          </div>
+                      </div> <br>   
+                      <input type="submit" name="addRoleSubmit" class="btn btn-primary" value="Submit"> 
+                      </form>
+                    </div>
+                  </div>
+                </div>       
+                {% endif %}
+
+
+    
+
+
+                {% if section == 'view_doc' %}
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col text-center">
+                      {% for doc in documents %}
+                        <br><h1 class="display-6">VIEW DOCUMENT ({{ doc.filename }})</h1>
+                        <a href="{{MEDIA_URL}}{{ doc.filename }}" class="btn btn-sm btn-outline-dark" download="{{ doc.filename }}">Download 🔽</a> 
+                      {% if messages %}
+                          {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                                  <div class="alert alert-danger">{{ message }}</div>
+                              {% elif message.tags == 'success' %}
+                                  <div class="alert alert-success">{{ message }}</div>
+                              {% endif %}
+                          {% endfor %} 
+                      {% endif %}
+                      <hr />  
+                      <div class="border bg-light rounded-4"> 
+                          <div class="justify-content-center" style="margin:20px">
+                              <div class="row">
+                                  
+                                      {% if doc.filetype == "pdf" %} 
+                                            <canvas id="pdfCanvas"></canvas>
+
+                                            <script>
+                                              document.addEventListener('DOMContentLoaded', function() {
+                                                // Your PDF.js code here
+                                                const pdfUrl = '{{ MEDIA_URL }}{{ doc.filename }}';
+                                                const pdfCanvas = document.getElementById('pdfCanvas');
+
+                                                pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc => {
+                                                  return pdfDoc.getPage(1);
+                                                }).then(page => {
+                                                  const viewport = page.getViewport({ scale: 1 });
+                                                  const canvasContext = pdfCanvas.getContext('2d');
+                                                  pdfCanvas.width = viewport.width;
+                                                  pdfCanvas.height = viewport.height;
+                                                  const renderContext = { canvasContext, viewport };
+                                                  return page.render(renderContext).promise;
+                                                }).catch(error => {
+                                                  console.error('Error loading PDF:', error);
+                                                });
+                                              });
+                                            </script>
+                                      {% elif doc.filetype == "image" %} 
+                                          <img src="{{ MEDIA_URL }}{{ doc.filename }}" width="100%">  
+                                      {% elif doc.filetype == "word" %}
+                                          <iframe src="https://view.officeapps.live.com/op/embed.aspx?src={{ MEDIA_URL }}{{ doc.filename }}" width="100%" height="500px"></iframe>
+                                      {% else %} 
+                                          <p>Unsupported file type.</p>
+                                      {% endif %}
+                                  
+                              </div>  
+                          </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>          
+                {% endif %} 
+
+
+
+
+                {% if section == 'view_correspondence_doc' %}
+                    <div class="container-fluid">
+                      <div class="row">
+                        <div class="col text-center">
+                        {% for doc in documents %}
+                          <br><h1 class="display-6">VIEW DOCUMENT ({{ doc.filename }})</h1>
+                          <a href="{{MEDIA_URL}}{{ doc.filename }}" class="btn btn-sm btn-outline-dark" download="{{ doc.filename }}">Download 🔽</a> 
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% elif message.tags == 'success' %}
+                                    <div class="alert alert-success">{{ message }}</div>
+                                {% endif %}
+                            {% endfor %} 
+                        {% endif %} 
+                        <hr />  
+                        <div class="border bg-light rounded-4">
+                            <div class="justify-content-center" style="margin:20px">
+                                <div class="row">
+                                    
+                                        {% if doc.filetype == "pdf" %} 
+                                              <canvas id="pdfCanvas"></canvas>
+
+                                              <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                  // Your PDF.js code here
+                                                  const pdfUrl = '{{ MEDIA_URL }}{{ doc.filename }}';
+                                                  const pdfCanvas = document.getElementById('pdfCanvas');
+
+                                                  pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc => {
+                                                    return pdfDoc.getPage(1);
+                                                  }).then(page => {
+                                                    const viewport = page.getViewport({ scale: 1 });
+                                                    const canvasContext = pdfCanvas.getContext('2d');
+                                                    pdfCanvas.width = viewport.width;
+                                                    pdfCanvas.height = viewport.height;
+                                                    const renderContext = { canvasContext, viewport };
+                                                    return page.render(renderContext).promise;
+                                                  }).catch(error => {
+                                                    console.error('Error loading PDF:', error);
+                                                  });
+                                                });
+                                              </script>
+                                        {% elif doc.filetype == "image" %} 
+                                            <img src="{{ MEDIA_URL }}{{ doc.filename }}" width="100%">  
+                                        {% elif doc.filetype == "word" %}
+                                            <iframe src="https://view.officeapps.live.com/op/embed.aspx?src={{ MEDIA_URL }}{{ doc.filename }}" width="100%" height="500px"></iframe>
+                                        {% else %} 
+                                            <p>Unsupported file type.</p>
+                                        {% endif %}
+                                    
+                                </div>  
+                            </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>      
+                {% endif %} 
+
+
+
+                {% if section == 'list' %}
+                  <div class="container-fluid">
+                    <div class="row">
+                      {% include 'common/section.html' %}
+                      <h4 class="text-success">Total Documents - {{ doc_count }}</h4>
+                      <div class="col text-center">
+                        
+                        
+                        <h1 class="display-6">LIST ALL DOCUMENTS ({{ doc_count }})
+                        </h1>  
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% elif message.tags == 'success' %}
+                                    <div class="alert alert-success">{{ message }}</div>
+                                {% endif %}
+                            {% endfor %} 
+                        {% endif %}  
+                        <div class="border bg-light rounded-4">
+                            <div class="justify-content-center" style="margin:20px">
+                                <div class="row">
+                                    <table class="table table-responsive table-sm" style="font-size:13px">
+                                        <thead class="table-primary">
+                                            <tr>
+                                              
+                                              <th>From</th>
+                                              <th>To</th>
+                                              <th>Message/Note</th>
+                                              <th>File Name</th> 
+                                              <th>File</th> 
+                                              <th>Sended</th>
+                                              <th>Is Opened</th>
+                                              <th>Is Forwarded</th> 
+                                              <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for msg in messagesObj %} 
+                                          <tr>
+                                    
+                                              <td>{{ msg.from_user.username|upper }}</td>
+                                              <td>{{ msg.to_user.username|upper }}</td>
+                                              <td>{{ msg.message }}</td>
+                                              <th>{{ msg.document.title }}</th>      
+                                              <td>
+                                                {% if request.session.role == msg.from_user.username %}
+                                                  <a href="{% url 'view-monitoring-document' msg.document.id 0 %}" class="text-decoration-none text-dark">{{ msg.document.filename }}</a></td>
+                                                {% else %}
+                                                  <a href="{% url 'view-monitoring-document' msg.document.id msg.id %}" class="text-decoration-none text-dark">{{ msg.document.filename }}</a></td>
+                                                {% endif %} 
+                                              <td>{{ msg.created }}</td>
+                                              <td>
+                                                {% if msg.is_opened == 1 %}
+                                                  <b class="text-success">Opened ✔️</b>
+                                                {% elif msg.is_opened == 0 %}
+                                                  <b class="text-dark">Pending ⚠️</b> 
+                                                {% else %}
+                                                  Unknown
+                                                {% endif %} 
+                                              </td>
+                                              <td>
+                                                {% if msg.is_forwarded == 1 %}
+                                                  <b class="text-success">Yes ✔️</b>
+                                                {% elif msg.is_forwarded == 0 %}
+                                                  <b class="text-dark">No</b> 
+                                                {% else %}
+                                                  Unknown
+                                                {% endif %}
+                                              </td>  
+                                              <td>
+
+                                                {% if msg.status == 1 %}
+                                                  <b class="text-success">Active</b>
+                                                {% elif msg.status == 2 %}
+                                                  <b class="text-dark">Inactive</b> 
+                                                {% else %}
+                                                  Unknown
+                                                {% endif %}
+
+                                              </td>
+                                              
+                                            </tr>
+                                            {% endfor %} 
+                                        </tbody>
+                                      </table>
+                                </div> 
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>   
+                {% endif %}
+
+  
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/pdf.min.js' %}"></script>  
+  <script src="{% static 'js/pdf.worker.min.js' %}"></script>
+  </body>
+</html>

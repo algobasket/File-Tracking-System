@@ -1,0 +1,61 @@
+{% if request.session.role == 'admin' %}
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">GMS FILE TRACKING SYSTEM</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto"> 
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard-admin' %}">DASHBOARD</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin-list-department' %}">DEPARTMENT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin-list-users' %}">USER</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin-list-roles' %}">ROLE</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin-list-correspondence' %}">CORRESPONDENCE</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin-monitoring-documents' %}">DOCUMENTS</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-sm btn-primary" href="{% url 'logout' %}">LOGOUT</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+   </nav>
+{% endif %}
+{% if request.session.role == 'gms' %}
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">GMS FILE TRACKING SYSTEM</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto"> 
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard-admin' %}">DASHBOARD</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin-list-correspondence' %}">CORRESPONDENCE</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin-monitoring-documents' %}">DOCUMENTS</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-sm btn-primary" href="{% url 'logout' %}">LOGOUT</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+   </nav>
+{% endif %}

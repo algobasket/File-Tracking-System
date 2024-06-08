@@ -1,0 +1,25 @@
+FIND YOUR LAN IP ADDRESS
+1) Put IP in .env file
+2) Replace local domain in nginx.config and .env file
+
+WINDOWS INSTALLATION - 
+Open PowerShell with administrative privileges
+1) Go to project root
+2) project root >./deploy-docker-windows.ps1
+
+
+
+LINUX INSTALLATION - 
+On a Linux Ubuntu system, the process will involve slightly different
+1) Go to project root
+2) project root > chmod +x add-host-entry.sh
+3) project root > chmod +x deploy-docker-linux.sh 
+4) project root >./deploy-docker-linux.sh   
+
+
+App will be running at - http://efhz.lan/
+PhpMyAdmin will be running at - http://efhz.lan:8080/
+
+LAN - 
+App - http://LAN-IP.lan/
+PhpMyAdmin - http://LAN-IP.lan:8080/

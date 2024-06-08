@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DakGhar</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body>
+   
+    {% include 'common/menu.html' %}
+
+   
+           
+            
+
+                {% if section == 'add' %}
+                <div class="container-fluid">
+                  <div class="row">
+                    {% include 'common/section.html' %}
+                    <div class="col text-center">
+                      <form method="post">
+                        {% csrf_token %} 
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% elif message.tags == 'success' %}
+                                    <div class="alert alert-success">{{ message }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}  
+                      <h1 class="display-6">ADD USER</h1> 
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                               <div class="row">
+                                  <table class="table">
+            
+                                    <tr>
+                                      <td>USERNAME*</td> 
+                                      <td><input type="text" name="username" class="form-control bg-primary" placeholder="Username" required></td> 
+                                    </tr>
+                                    <tr>
+                                      <td>PASSWORD*</td>
+                                      <td><input type="text" name="password" class="form-control bg-primary" placeholder="Password" required></td>
+                                    </tr>
+                                    <tr>
+                                      <td>FULL NAME</td>
+                                      <td><input type="text" name="full_name" class="form-control bg-primary" placeholder="Full Name" required></td>
+                                    </tr>
+                                    <tr>
+                                      <td>PHONE*</td>
+                                      <td><input type="text" name="phone" class="form-control bg-primary" placeholder="Phone" required></td>  
+                                    </tr>
+                                    <tr>
+                                      <td>ROLE*</td>  
+                                      <td>
+                                        <select class="form-control" name="role">
+                                          {% for role in roles %} 
+                                            <option value="{{ role.id }}">{{ role.role_name }}</option>
+                                          {% endfor %}
+                                        </select>
+                                      </td>
+                                    </tr>
+                            
+                                    
+                                  </table>
+                               </div> 
+                          </div>
+                      </div> <br>   
+                      <input type="submit" name="addCorrespondenceSubmit" class="btn btn-primary" value="Submit">
+                      </form> 
+                    </div>
+                  </div>
+                </div>      
+                {% endif %}
+              
+
+
+                {% if section == 'edit' %}
+                <div class="container-fluid">
+                  <div class="row">
+                    {% include 'common/section.html' %}
+                    <div class="col text-center">  
+                       <form method="post">
+                        {% csrf_token %} 
+                        {% if messages %}
+                          {% for message in messages %}
+                              <div class="alert alert-danger">{{ message }}</div>
+                          {% endfor %}
+                        {% endif %}
+                      <h1 class="display-6">EDIT USER</h1> 
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                               <div class="row">
+                                  <table class="table">
+            
+                                    <tr>
+                                      <td>USERNAME</td>
+                                      <td><input type="text" name="username" class="form-control bg-primary" placeholder="Username"></td> 
+                                    </tr>
+                                    <tr>
+                                      <td>PASSWORD</td>
+                                      <td><input type="text" name="password" class="form-control bg-primary" placeholder="Password"></td>
+                                    </tr>
+                                    <tr>
+                                      <td>ROLE</td> 
+                                      <td>
+                                        <input type="hidden" id="csrf_token" value="{% csrf_token %}">
+                                        <select class="form-control" name="role">
+                                          {% for role in roles %} 
+                                            <option value="{{ role.role_name }}">{{ role.role_name }}</option>
+                                          {% endfor %}
+                                        </select>
+                                      </td>
+                                    </tr>
+                            
+                                    
+                                  </table>
+                               </div> 
+                          </div>
+                      </div> <br>   
+                      <input type="submit" name="addCorrespondenceSubmit" class="btn btn-primary" value="Submit">
+                      </form>
+                    </div>
+                  </div>
+                </div>          
+                {% endif %}
+
+
+                {% if section == 'list' %}
+                <div class="container-fluid">
+                  <div class="row">
+                    {% include 'common/section.html' %}
+                    <h4 class="text-success">Total Users - {{user_count}} </h4>
+                    <div class="col text-center">  
+                      <h1 class="display-6">LIST ALL USERS ({{user_count}})
+                        <a href="{% url 'admin-add-user' %}" class="btn btn-sm btn-outline-dark">ADD USER</a>
+                        <a href="{% url 'admin-add-role' %}" class="btn btn-sm btn-outline-dark">ADD ROLE</a>
+                      </h1>  
+                      {% if messages %}  
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% elif message.tags == 'success' %}
+                                    <div class="alert alert-success">{{ message }}</div>
+                                {% endif %}
+                            {% endfor %}
+                      {% endif %}  
+                      <div class="border bg-light rounded-4">
+                          <div class="justify-content-center" style="margin:20px">
+                              <div class="row">
+                                <table class="table table-sm table-light" style="font-size:13px">
+                                  <thead class="table-primary">
+                                      <tr>
+                                          <th>Username</th>
+                                          <th>Password</th>
+                                          <th>Role</th>
+                                          <th>Created</th>
+                                          <th>Status</th>
+                                          <th>Action</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for user_info  in users %}
+                                      <tr>
+                                          <td>{{ user_info.user.username }}</td>
+                                          <td>{{ user_info.user.password|slice:":15" }}..</td>
+                                          <td>
+                                            {% for role_map in user_info.user_role_maps %}
+                                              {{ role_map.role.role_name }}
+                                            {% endfor %}
+                                          </td>
+
+                                          <td>{{ user_info.user.created }}</td>
+                                          <td>
+                                            {% if user_info.user.status == 0 %}
+                                              <b class="text-danger">Inactive</b>
+              
+                                            {% elif user_info.user.status == 1 %}
+                                              <b class="text-success">Active</b>
+                                      
+                                            {% endif %}
+                                          </td>
+                                          <td><a href="{% url 'admin-delete-user' user_info.user.id %}" class="btn btn-sm btn-outline-dark">Delete</a></td>
+                                      </tr>
+                                      {% endfor %}
+                                  </tbody>
+                              </table>
+                              </div> 
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>       
+                {% endif %}
+
+
+                 
+
+          
+
+       
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+     <script src="{% static 'js/script.js' %}"></script> 
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

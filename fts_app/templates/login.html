@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    {% load static %}
+    <link href="{% static 'bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+     <style>
+    /* Custom CSS to center content */
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Optional: Makes the content take up the full height of the viewport */
+    }
+  </style>
+  </head>
+  <body> 
+    <div class="container">
+       <div class="row center-content">
+         <div class="col-5 text-center">
+           <img src="{% static 'images/logo.png' %}" style="width: 400px;"/><br><br><br>
+           <h1 class="display-6">GMS FILE TRACKING SYSTEM</h1>
+
+
+         {% if request.session.user_id %}
+             <br>
+             <a href="{% url request.session.home_url %}" class="btn btn-outline-dark">BACK TO DASHBOARD</a>
+         {% else %}
+            <h3>LOGIN SCREEN</h3>
+           <form method="post" action="{% url 'login' %}">  
+                {% csrf_token %} 
+                {% if messages %}
+                  {% for message in messages %}
+                      {% if message.tags == 'error' %}
+                          <div class="alert alert-danger">{{ message }}</div>
+                      {% elif message.tags == 'success' %}
+                          <div class="alert alert-success">{{ message }}</div>
+                      {% endif %}
+                  {% endfor %} 
+                {% endif %}  
+                <div class="border bg-primary rounded-4">
+                    <div class="justify-content-center" style="margin:20px">
+
+                             <div class="row mb-3">
+                                <label for="username" class="col-sm-3 col-form-label text-white fw-bold">USER ID:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your username.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="password" class="col-sm-3 col-form-label text-white fw-bold">PASSWORD:</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your password.
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <br> 
+                <input type="submit" class="btn btn-primary" value="Login"/>
+            </form>
+         {% endif %}
+
+           
+
+             <hr>
+             <div class="border">
+                <table class="table table-borderless">
+                  <thead class="table-primary">
+                    <tr>
+                      <th colspan="2"><h3 class="display-6">REPORTS</h3></th>
+                   </tr>
+                  </thead>
+                   <tbody>
+                      <tr class="table-light">
+                         <td colspan="2">
+                            <a href="{% url 'daily-entry-report' %}" class="text-decoration-none text-dark">Daily Entry Report</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="bg-danger"><a href="{% url 'red-cornered-open' %}" class="text-decoration-none text-dark">Red Cornered Documents (Open)</a></td>
+                        <td class="bg-success"><a href="{% url 'red-cornered-closed' %}" class="text-decoration-none text-dark">Red Cornered Documents (Closed)</a></td>
+                     </tr>
+                     <tr class="table-info">
+                      <td colspan="2"><a href="{% url 'all-documents-open-closed' %}" class="text-decoration-none text-dark">All Documents (Open & Closed)</a></td>
+                     </tr>
+                     <tr class="table-warning">
+                      <td colspan="2"><a href="{% url 'all-documents-closed' %}" class="text-decoration-none text-dark">All Documents (Closed)</a></td>
+                     </tr>
+                   </tbody>
+                </table>
+             </div>
+         </div>
+       </div>
+    </div>
+    <script src="{% static 'bootstrap5/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>
